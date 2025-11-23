@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Poha Lab</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .SearchBox:active {
+            outline: none;
+        }
+
+        .SearchBox:focus {
+            outline: none;
+        }
+
+        .SearchBox {
+            outline: 0px;
+        }
+
+        a.active,
+        a:hover {
+            background: rgb(49, 68, 160);
+            transition: 0.5s;
+        }
+
+        #navbarSupportedContent {
+            margin: 0 0 0 35rem;
+        }
+
+        .herosec {
+            min-height: 370px;
+            max-height: fit-content;
+            background-image: url(./pictures/bg.jpg);
+            background-repeat: no-repeat;
+            background-size: 100%;
+        }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #084568;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        #chatbot {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 80vh;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            flex-direction: column;
+
+        }
+
+        #chatbot-header {
+            background: #084568;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        #chatbot-body {
+            padding: 10px;
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        #close-chatbot {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            font-family: sans-serif;
+        }
+
+        .user-message {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .bot-message {
+            position: relative;
+            padding: 12px;
+            background-color: #e6f0f7;
+            border-radius: 10px;
+            margin: 10px 0;
+            max-width: 80%;
+        }
+
+        .copy-btn {
+            position: absolute;
+            bottom: -18px;
+            right: -25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #084568;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        /* #language-options {
+            margin-bottom: 10px;
+        } */
+
+        .lang-btn {
+            margin-right: 5px;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: none;
+            background-color: #e0e0e0;
+            cursor: pointer;
+        }
+
+        .lang-btn.active {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .mic-button {
+            font-size: 24px;
+            padding: 10px;
+            border-radius: 50%;
+            border: none;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .mic-button.recording {
+            box-shadow: 0 0 15px 5px red;
+            background-color: #ffcdd2;
+        }
+
+        #voice-status {
+            margin-left: 10px;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        #chatbot-footer {
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        #prompt {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-family: sans-serif;
+        }
+
+        .mic-button {
+            font-size: 20px;
+            padding: 5px;
+            border-radius: 50%;
+            border: none;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .mic-button.recording {
+            box-shadow: 0 0 15px 5px red;
+            background-color: #ffcdd2;
+        }
+
+        .send-btn {
+            font-size: 18px;
+            border: none;
+            background-color: #084568;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #language-popup {
+            position: absolute;
+            bottom: 60px;
+            right: -4%;
+            transform: translateX(-50%);
+            background: white;
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 180px;
+            user-select: none;
+            z-index: 100;
+        }
+
+        #language-popup-text {
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-family: sans-serif;
+        }
+
+        #language-options-popup {
+            display: flex;
+            justify-content: space-around;
+            gap: 5px;
+        }
+
+        .lang-popup-btn {
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: none;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        #clear-chat-btn {
+            font-size: 18px;
+            border: none;
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 42px;
+            height: 42px;
+        }
+
+        #clear-chat-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+
+        .lang-popup-btn:hover {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .lang-popup-btn.active {
+            background-color: #4caf50;
+            color: white;
+            font-weight: bold;
+        }
+
+
+
+        .hidden {
+            display: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            #navbarSupportedContent {
+
+                margin: 0;
+                background-color: #084568;
+            }
+
+            .herosec {
+                min-height: 370px;
+                max-height: fit-content;
+                background-image: url(./pictures/bg.jpg);
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
+            }
+        }
+    </style>
+</head>
+
+<body style="background-color: rgb(240,239,239);">
+
+    <div class="container-fluid" style="height:70px; background-color: #084568;">
+
+        <nav class="navbar navbar-expand-lg container">
+            <div class="container-fluid">
+                <a style="  line-height: 41px;" href="index.html">
+                    <img src="./pictures/logomain.png" alt="">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                        <li class="nav-item" style=" display: inline-block; margin: 0 5px;">
+                            <a class="active nav-link"
+                                style="color: white; text-decoration: auto;  font-size: 17px;  padding: 10px 13px;  border-radius: 3px;  text-transform: uppercase;"
+                                href="index.html">
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item" style=" display: inline-block;    margin: 0 5px;">
+                            <a class="nav-link"
+                                style="color: white; text-decoration: auto; font-size: 17px; padding: 10px 13px; border-radius: 3px; text-transform: uppercase;"
+                                href="#">
+                                About
+                            </a>
+                        </li>
+                        <li class="nav-item" style=" display: inline-block;    margin: 0 5px;">
+                            <a class="nav-link"
+                                style="color: white; text-decoration: auto; font-size: 17px; padding: 10px 13px; border-radius: 3px; text-transform: uppercase;"
+                                href="#">
+                                Gallery
+                            </a>
+                        </li>
+                        <li class="nav-item" style=" display: inline-block;    margin: 0 5px;">
+                            <a class="nav-link"
+                                style="color: white; text-decoration: auto; font-size: 17px; padding: 10px 13px; border-radius: 3px; text-transform: uppercase;"
+                                href="#">
+                                News
+                            </a>
+                        </li>
+                        <li class="nav-item" style=" display: inline-block;    margin: 0 5px;">
+                            <a class="nav-link"
+                                style="color: white; text-decoration: auto; font-size: 17px; padding: 10px 13px; border-radius: 3px; text-transform: uppercase;"
+                                href="#">
+                                Contact
+                            </a>
+                        </li>
+                        <li class="nav-item" style=" display: inline-block;    margin: 0 5px;">
+                            <a class="nav-link"
+                                style="color: white; text-decoration: auto; font-size: 17px; padding: 10px 13px; border-radius: 3px; text-transform: uppercase;"
+                                href="#">
+                                REgistration
+                            </a>
+                        </li>
+
+                        <!-- <li class="nav-item" style=" display: inline-block; margin: 0 5px;">
+                            <a class="nav-link"
+                                style="color: white; text-decoration: auto; font-size: 17px; padding: 10px 13px; border-radius: 3px; text-transform: uppercase; background-color: #084568;"
+                                id="chatbot-toggle" href="#">
+                                Chat with POHA
+                            </a>
+                        </li> -->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <button id="chatbot-toggle">Chat with <img src="./pictures/logomain.png" style="width: 50px;" alt=""></button>
+    <div id="chatbot">
+        <!-- <div id="chatbot-header">
+            <img src="./pictures/logomain.png" style="width: 80px;" alt="">
+            <button id="close-chatbot">&times;</button>
+
+        </div> -->
+
+        <div id="chatbot-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center;">
+                <img src="./pictures/logomain.png" style="width: 80px;" alt="">
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <div id="language-buttons" style="margin-left: 10px;">
+                    <button class="lang-btn" data-lang="ur-PK">اردو</button>
+                    <button class="lang-btn" data-lang="en-US">English</button>
+                    <button class="lang-btn" data-lang="ps-PK">پښتو</button>
+                </div>
+                <button id="close-chatbot">&times;</button>
+            </div>
+        </div>
+
+        <div id="chatbot-body"></div>
+        <div id="chatbot-footer">
+            <textarea id="prompt" rows="1" placeholder="Type a message..." style="resize: none;" autofocus></textarea>
+
+            <button id="voice-btn" class="mic-button" title="Hold Ctrl & click to change language">🎤</button>
+
+            <i onclick="askGemini()" class="fa-solid fa-paper-plane"
+                style="font-size: 20px; border: none; background-color: #084568; color: white; padding: 10px; border-radius: 50%; cursor: pointer;"
+                title="Send"></i>
+            <button id="clear-chat-btn" title="Clear Chat" disabled><i class="fa-solid fa-trash"></i></button>
+        </div>
+    </div>
+
+    <div class="container-fluid overflow-hidden">
+        <div class="container herosec rounded my-4 d-flex
+                align-items-center">
+            <div class="row w-100" style="margin: 0 34px;">
+                <div class="col-md-2"></div>
+                <div class=" col-md-4 col-sm-10 mx-auto
+                        my-2
+                        d-flex align-items-center flex-column
+                        justify-content-center">
+                    <selection>
+                        <!-- <h5 style="text-transform: uppercase; color:
+                                #8F8F8F;">
+                            A new way
+                        </h5>
+                        <h3 class="fs-1 " style="color: #6f9b23; ">
+                            To sharpen your
+                            knowledge
+                        </h3> -->
+                    </selection>
+                </div>
+                <!-- <div class=" col-md-4 col-sm-10 mx-auto
+                        my-2
+                        d-flex justify-content-end ">
+                    <img src="./pictures/mainlogo.png" style="width:87%;
+                            height:auto; object-fit:cover;" alt="">
+                </div> -->
+                <div class="col-md-2"></div>
+
+            </div>
+
+        </div>
+
+        <!-- for Subjects -->
+        <div class="container my-5">
+            <h5>Subjects</h5>
+
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-10 my-3">
+                    <div class="card rounded border-0 position-relative"
+                        style="height:330px ;box-shadow: 12px 14px 48px 1px rgba(0,0,0,0.49);">
+                        <div class="card-image d-flex mt-5">
+                            <img src="./pictures/FramePhysics.png" style="width:150px; height:auto; margin:0px
+                                    auto; " alt="">
+                        </div>
+                        <a href="./Resources/physics.html" style="text-decoration:none;">
+                            <div class="card-body d-flex
+                                    justify-content-between
+                                    " style="position:absolute; height: 70px;
+                                    bottom:
+                                    -2px;
+                                    right:0px;
+                                    left:0px;background:url('./pictures/Vector4.png')
+                                    no-repeat">
+
+                                <span style="color:white; font-weight:
+                                        bold;">
+                                    Physics
+                                </span>
+
+                                <div class="arrow" style="color:#084568;
+                                        font-size:25px;">
+                                    <i class="bi bi-arrow-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-10 my-3">
+                    <div class="card rounded border-0 position-relative"
+                        style="height:330px; box-shadow: 12px 14px 48px 1px rgba(0,0,0,0.49);">
+                        <div class="card-image d-flex mt-5">
+                            <img src="./pictures/FrameBiology.png" style="width:150px; height:auto; margin:0px
+                                    auto; " alt="">
+                        </div>
+                        <a href="./Resources/biology.html" style="text-decoration:none; color:white">
+                            <div class="card-body d-flex
+                                    justify-content-between
+                                    " style="position:absolute; height: 70px;
+                                    bottom:
+                                    -2px;
+                                    right:0px;
+                                    left:0px;background:url('./pictures/Vector4.png')
+                                    no-repeat">
+                                <span style="color:white; font-weight:
+                                        bold;">
+                                    Biology
+                                </span>
+                                <div class="arrow" style="color:#084568;
+                                        font-size:25px;">
+                                    <i class="bi bi-arrow-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+
+
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-10 my-3">
+                    <div class="card rounded border-0 position-relative"
+                        style="height:330px; box-shadow: 12px 14px 48px 1px rgba(0,0,0,0.49);">
+                        <div class="card-image d-flex mt-5">
+                            <img src="./pictures/FrameChemistry.png" style="width:150px; height:auto; margin:0px
+                                    auto; " alt="">
+                        </div>
+                        <a href="./Resources/chemistry.html" style="text-decoration:none; color:white">
+                            <div class="card-body d-flex
+                                    justify-content-between
+                                    " style="position:absolute; height: 70px;
+                                    bottom:
+                                    -2px;
+                                    right:0px;
+                                    left:0px;background:url('./pictures/Vector4.png')
+                                    no-repeat">
+                                <span style="color:white; font-weight:
+                                        bold;">
+                                    Chemistry
+                                </span>
+                                <div class="arrow" style="color:#084568;
+                                        font-size:25px;">
+                                    <i class="bi bi-arrow-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Describtion -->
+        <section class="position-relative">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-10
+                            mx-auto">
+                        <h3>
+                            Poha E-Lab
+                        </h3>
+                        <p class="text-justify">
+                            Participatory Online Home learning Alternatives(POHA) is a program designed by Elementary &
+                            Secondary Education
+                            Foundation Khyber Pakhtunkhwa, specially to focus ‘out of school children’ and potential
+                            ‘passed outs’ who are normally
+                            dropped out after grade 5th. The idea was conceived, presented and supervised by Mr.
+                            Zarifulmaani (MD ESEF). His team
+                            includes Mr. Noor Sher, Said Zada (EMIS ESEF) ,Mr. Israr(HOPE), Mr. <a
+                                style="text-decoration: none;" href="https://www.linkedin.com/in/mianjawadahmad/">Mian
+                                Jawad Ahmad</a> Founder
+                            & CEO of <a href="https://encoderbytes.com/" style="text-decoration: none;">Encoder
+                                Bytes</a> & his team ,Dr
+                            Riaz (ESEF),Habib(DP ESEF) and
+                            others who contributed wholeheartedly to this initiative. ESEF manages non formal education
+                            sector in the province and
+                            running more than 4000 girls community schools. Apart from it, there are ESEF schools run by
+                            private partners under NSI
+                            and ESS programs. ESEF is trying cater for the ‘pass out’ students of girl’s community
+                            schools in the 6th grades through
+                            NSI or ESS but it is not possible to physically reach all ‘passed out’ 6th grade students
+                            ,therefore ESEF has come up
+                            with the ‘out of box solution’ which is called POHA.
+                            <br>
+                            POHA Lab, an innovative concept born from ESEF, has become a reality under the leadership of
+                            <a style="text-decoration: none;" href="https://www.linkedin.com/in/mianjawadahmad/">Mian
+                                Jawad Ahmad</a> the
+                            esteemed Founder and CEO of <a href="https://encoderbytes.com/"
+                                style="text-decoration: none;">Encoder
+                                Bytes Pvt Ltd </a> and his team. Representing a new era in
+                            technological advancement,
+                            POHA Lab. The Experiments & Simulations has been designed, & developed by Encoder Bytes,
+                            along with simulations Encoder
+                            Bytes also developed website of POHA Lab including UI/UX Designing, Back End & Front End
+                            Development. Encoder Bytes is
+                            one of the leading tech industry tirelessly revolutionizing various domains on a global
+                            scale.
+                        </p>
+
+
+                        <h4>
+                            The Features Include:
+                        </h4>
+                        <p>
+                        <ul class="text-justify">
+                            <li>
+                                Content aligned to NCERT/CBSE and State
+                                Board Syllabus.
+                            </li>
+                            <li>
+                                Physics, Chemistry, Biology Labs from
+                                Class
+                                9 to Class 12. English and Maths lessons
+                                for Class 9 and 10.
+                            </li>
+                            <li>
+                                Interactive simulations, animations and
+                                lab
+                                videos.
+                            </li>
+                            <li>
+                                The concepts and understanding of the
+                                experiment.
+                            </li>
+                            <li>
+                                The ability to perform, record and learn
+                                experiments - anywhere, anytime, and
+                                individualised practice in all areas of
+                                experimentation.
+                            </li>
+                        </ul>
+                        </p>
+                        <p class="text-justify">
+                            The 'learning-enabled assessment' through Poha
+                            E-lab
+                            facilitates in
+                            the assessment of; the procedural and
+                            manipulative
+                            skills of the experiment,
+                            the concepts and understanding of the experiment
+                            and
+                            a student's reporting and
+                            interpreting skills.
+
+                        </p>
+                        <p class="text-justify">
+                            POHA is in initiative which provides online as well as offline support through Education
+                            Learning Management System
+                            (ELMS) which is also designed by team of ESEF containing online digital material, assessment
+                            mechanism, online tutor
+                            support, profile record of each student, certification etc. There are 300 POHA clusters
+                            notified by ESEF in the province
+                            to facilitate catchment area students through offline support. The focal school teachers are
+                            trained on the system and
+                            the concept of Taleemi Razakars is introduced to work through Village Education Committee to
+                            reach out registered
+                            students. To facilitate students who are registered in POHA, videos containing lessons are
+                            also made available. For this
+                            purpose, an education studio is also established at the head office of ESEF.
+                            <br>
+                            To facilitate science students of 9th 10th 11th and 12th grade, a unique project is
+                            undertaken which is called POHA
+                            simulation science lab. It includes videos of ‘experiments’/ practical, of grade 9th and
+                            10th. Normally students do not
+                            have proper science Lab facilities. Every science subject has a practical viva voce but
+                            everybody knows that it is now a
+                            formality only. Reasons are; less budget for science Labs and equipment, no facility of Lab
+                            at average private school,
+                            and lack of interest and time scarcity on the part of students. In POHA system, now there is
+                            virtual science lab where a
+                            student can actually get feeling of ‘doing’, using and practicing science equipment.
+                            Stepwise instructions, Videos of
+                            every procedure, questions/answers and theory is available to students in such a way that
+                            the learner can easily operate
+                            personally. It is it is interesting to mention that normally a science lab in a government
+                            school costs six million and
+                            number of schools where science lab is required in the government sector is more than 3000
+                            while in private sector,
+                            schools which need science lab are more than 3000. It means that we need 6000 science labs
+                            for the students of 9th and
+                            10th class immediately which is going to cost at least 36 billion……seems not feasible to be
+                            allocated in near future.
+                            Therefore, ESEF’s POHA virtual science lab is getting popular to facilitate all the science
+                            students across the province
+                            free of cost.
+                            <br>
+                            Dear Education managers, teachers,parents,private school owners, and students, please use
+                            this facility and try to get
+                            as much benefit as you can get but plz give positive feed back so that we may improve it
+                            further. It is just a beginning
+                            and there might be lots of deficiencies and mistakes but it is an effort indigenously by
+                            ESEF. All rights reserved with
+                            ESEF and any financial gains will be used for education of deserving students.
+
+                        </p>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-10
+                            mx-auto">
+                        <img src="./pictures/video.png" alt="" style="width:100%; height:auto;
+                                object-fit:cover;">
+
+                    </div>
+                </div>
+            </div>
+            <div class="halfCircleLeft">
+                <img src="./pictures/halfCircleLeft.png" style="width:50%;
+                        height:auto;" alt="">
+            </div>
+            <!-- circle left -->
+            <div class="halfCircleRight w-25">
+                <img src="./pictures/Vector.png" style="width:70%; position: absolute;
+                    height:auto; z-index:-1;" class="" alt="">
+            </div>
+        </section>
+    </div>
+
+    <footer class="text-lg-start text-white" id="footer"
+        style="background-image: linear-gradient(to right,  #0748A7, #084568); padding: 52px 0 14px 4rem;">
+        <div class="container">
+            <div class="row r1">
+                <div class="col-md-4 div1">
+                    <div>
+                        <img src="./pictures/logomain.png" alt="" class="img-fluid">
+                        <p style="    padding: 34px 0;font-size: 13px;">
+                            POHA is in initiative which provides online as
+                            well as offline support through Education
+                            Learning Management System (ELMS) which is also designed by team of ESEF containing online
+                            digital material, assessment mechanism, online tutor support, profile record of each
+                            student, certification etc.
+                        </p>
+
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-4 pt-3" id="div2">
+
+                    <h2 style="font-style: normal; font-weight: 700; font-size: 24px; line-height: 19px;">
+                        Quick Links
+                    </h2>
+                    <div class="row">
+                        <div class="list-unstyled color-white d-flex flex-column col-md-4" id="link-ftr"
+                            style="padding: 34px 0 0 15px;">
+                            <a style="font-style: normal;font-weight: 500;font-size: 16px;line-height: 15px; text-decoration: none; color: white;"
+                                href="index.html">
+                                Home
+                            </a>
+                            <a style="font-style: normal;font-weight: 500;font-size: 16px;line-height:  15px; padding: 20px 0; text-decoration: none; color: white;"
+                                href="#">
+                                Gallary
+                            </a>
+                            <a style="font-style: normal;font-weight: 500;font-size: 16px;line-height: 15px; text-decoration: none; color: white;"
+                                href="#">
+                                Blogs
+                            </a>
+                        </div>
+                        <div class="col-md-4" id="div2">
+
+
+                            <div class="list-unstyled color-white d-flex flex-column" id="link-ftr"
+                                style="padding: 2.2rem 0 0 0;">
+                                <a style="font-style: normal;font-weight: 500;font-size: 16px;line-height: 15px; text-decoration: none; color: white;"
+                                    href="index.html">
+                                    News
+                                </a>
+                                <a style="font-style: normal;font-weight: 500;font-size: 16px; padding: 20px 0;line-height: 15px; text-decoration: none; color: white;"
+                                    href="#">
+                                    Contact
+                                </a>
+                                <a style="font-style: normal;font-weight: 500;font-size: 16px;line-height: 15px; text-decoration: none; color: white;"
+                                    href="#">
+                                    Registration
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-3 pt-3" id="div2">
+
+                    <h2 style="font-style: normal; font-weight: 700; font-size: 24px; line-height: 19px;">
+                        Contacts
+                    </h2>
+                    <div>
+                        <p
+                            style="padding: 24px 0 0 0; font-style: normal;font-weight: 600;font-size: 20px;line-height: 19px;">
+                            info@poha.gov.pk
+                        </p>
+                        <p style="font-style: normal;font-weight: 600;font-size: 20px;line-height: 19px;">
+                            091-370-3242
+                        </p>
+
+                        <div class="row" id="links">
+                            <div class=" links-item">
+                                <img src="./pictures/Frame20.png" alt="">
+                            </div>
+                            <div class="col-md-5"></div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class=" r2 text-white text-center"
+                style="font-style: normal;font-weight: 500;font-size: 12.8px;line-height: 15px;color: #8F8F8F; padding: 44px 0 0 0;">
+                POHA LAB © 2023, All rights reserved.
+            </div>
+
+
+        </div>
+
+    </footer>
+
+    <script>
+        const API_KEY = "AIzaSyDoNBEBDIIBrdmNiwwum7TmQzX4PY-4Cp4";
+
+        document.getElementById("chatbot-toggle").onclick = () => {
+            document.getElementById("chatbot").style.display = "flex";
+        };
+
+        document.getElementById("close-chatbot").onclick = () => {
+            document.getElementById("chatbot").style.display = "none";
+        };
+
+        const micButton = document.getElementById("voice-btn");
+        const languagePopup = document.getElementById("language-popup");
+        // const languageButtons = document.querySelectorAll(".lang-popup-btn");
+        const languageButtons = document.querySelectorAll(".lang-btn");
+
+
+        let recognition;
+        let selectedLanguage = null;
+        // micButton.addEventListener("click", () => {
+        //     if (languagePopup.classList.contains("hidden")) {
+
+        //         languageButtons.forEach(btn => btn.classList.remove("active"));
+        //         selectedLanguage = null;
+
+        //         languagePopup.classList.remove("hidden");
+        //     } else {
+        //         languagePopup.classList.add("hidden");
+        //     }
+        // });
+        // micButton.addEventListener("click", () => {
+
+        //     // If already recording, ignore further clicks
+        //     if (micButton.classList.contains("recording")) return;
+
+        //     if (selectedLanguage) {
+        //         // Language already selected: start recognition directly
+        //         micButton.classList.add("recording");
+        //         startRecognition(selectedLanguage);
+        //     } else {
+        //         // First time: show popup to choose language
+        //         languageButtons.forEach(btn => btn.classList.remove("active"));
+        //         languagePopup.classList.remove("hidden");
+        //     }
+        // });
+
+        // micButton.addEventListener("click", (e) => {
+        //     if (e.ctrlKey || e.shiftKey) {
+        //         selectedLanguage = null;
+        //         languageButtons.forEach(btn => btn.classList.remove("active"));
+        //     }
+
+
+        //     if (micButton.classList.contains("recording")) return;
+
+        //     if (selectedLanguage) {
+        //         micButton.classList.add("recording");
+        //         startRecognition(selectedLanguage);
+        //     } else {
+        //         languageButtons.forEach(btn => btn.classList.remove("active"));
+        //         languagePopup.classList.remove("hidden");
+        //     }
+        // });
+
+        micButton.addEventListener("click", (e) => {
+            if (micButton.classList.contains("recording")) return;
+
+            if (e.ctrlKey || e.shiftKey) {
+                selectedLanguage = null;
+                languageButtons.forEach(btn => btn.classList.remove("active"));
+                alert("Please select a new language from the top.");
+                return;
+            }
+
+            if (selectedLanguage) {
+                micButton.classList.add("recording");
+                startRecognition(selectedLanguage);
+            } else {
+                alert("Please select a language from the top before using voice input.");
+            }
+        });
+
+
+        // languageButtons.forEach(button => {
+        //     button.addEventListener("click", () => {
+        //         languageButtons.forEach(btn => btn.classList.remove("active"));
+
+        //         button.classList.add("active");
+
+        //         selectedLanguage = button.getAttribute("data-lang");
+
+        //         languagePopup.classList.add("hidden");
+
+        //         micButton.classList.add("recording");
+
+        //         startRecognition(selectedLanguage);
+        //     });
+        // });
+
+        // languageButtons.forEach(button => {
+        //     button.addEventListener("click", () => {
+        //         languageButtons.forEach(btn => btn.classList.remove("active"));
+        //         button.classList.add("active");
+
+        //         selectedLanguage = button.getAttribute("data-lang");
+        //         languagePopup.classList.add("hidden");
+
+        //         micButton.classList.add("recording");
+        //         startRecognition(selectedLanguage);
+        //     });
+        // });
+
+        languageButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                // Remove active class from all
+                languageButtons.forEach(btn => btn.classList.remove("active"));
+
+                // Set selected language and keep it green
+                selectedLanguage = button.getAttribute("data-lang");
+                button.classList.add("active");
+
+                // languagePopup.classList.add("hidden");
+
+                micButton.classList.add("recording");
+                startRecognition(selectedLanguage);
+            });
+        });
+
+
+
+        function startRecognition(lang) {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                alert("Speech Recognition not supported in your browser.");
+                micButton.classList.remove("recording");
+                return;
+            }
+
+            if (!recognition) {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById("prompt").value = transcript;
+                    askGemini();
+                };
+
+                recognition.onerror = (event) => {
+                    console.error("Speech recognition error:", event.error);
+                    micButton.classList.remove("recording");
+                };
+
+                recognition.onend = () => {
+                    micButton.classList.remove("recording");
+                };
+            }
+
+            recognition.lang = lang;
+            recognition.start();
+        }
+
+        const chatBody = document.getElementById("chatbot-body");
+        const clearChatBtn = document.getElementById("clear-chat-btn");
+        clearChatBtn.onclick = () => {
+            if (chatBody.children.length > 0) {
+                chatBody.innerHTML = "";
+                updateClearButtonState();
+            }
+        };
+
+        function updateClearButtonState() {
+            clearChatBtn.disabled = chatBody.children.length === 0;
+        }
+
+        async function askGemini() {
+            const promptInput = document.getElementById("prompt");
+            const prompt = promptInput.value.trim();
+            const responseDisplay = document.getElementById("chatbot-body");
+
+            if (!prompt) return;
+
+            // Add user message
+            const userReply = document.createElement("div");
+            userReply.classList.add("message", "user-message");
+            userReply.innerText = prompt;
+            responseDisplay.appendChild(userReply);
+
+            // Add loading message
+            const loadingReply = document.createElement("div");
+            loadingReply.classList.add("message", "bot-message");
+            loadingReply.innerHTML = `<em>Loading...</em>`;
+            responseDisplay.appendChild(loadingReply);
+            //             text: `You are an educational assistant designed to help users with questions related to:
+            // - education,
+            // - school subjects (e.g., math, science, history, language),
+            // - academic concepts,
+            // - exams,
+            // - teaching and learning strategies,
+            // - and educational topics like religion, philosophy, or historical events.
+
+            // You may receive questions in different languages, including Pashto. If the question is educational in nature, provide a helpful and clear response in the same language.
+
+            // If the question is not related to educational, academic, or learning topics, politely decline to answer.`
+
+            promptInput.value = "";
+            responseDisplay.scrollTop = responseDisplay.scrollHeight;
+
+            // Update clear button state
+            updateClearButtonState();
+
+            try {
+                const result = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            contents: [
+                                {
+                                    role: "user",
+                                    parts: [
+                                        {
+
+                                            text: `You are an educational assistant designed to help users with questions related to:
+
+- all school subjects, including but not limited to:  
+  - Mathematics (e.g., algebra, geometry, calculus, statistics)  
+  - Science (e.g., physics, chemistry, biology, environmental science)  
+  - Language and Literature (e.g., English, Pashto, Urdu, Arabic, French, grammar, poetry, prose, writing skills)  
+  - Social Studies (e.g., history, geography, civics, political science)  
+  - Computer Science and ICT  
+  - Economics, Business Studies, and Accounting  
+  - Arts and Music  
+  - Physical Education and Health  
+  - Religious Studies (e.g., Islamic Studies, Comparative Religion)  
+  - Philosophy and Ethics  
+  - Psychology and Sociology  
+  - Career and Technical Education (e.g., vocational skills, entrepreneurship)  
+
+- academic concepts (e.g., theories, definitions, frameworks)  
+- study skills and learning strategies (e.g., memorization techniques, time management, exam preparation)  
+- standardized and local exams (e.g., SAT, ACT, GRE, entrance tests, board exams)  
+- educational methodologies and pedagogy (e.g., teaching techniques, classroom management)  
+- critical thinking, problem-solving, and creativity in education  
+- education systems and curriculum comparisons  
+- historical events and their educational significance  
+- interdisciplinary connections between subjects  
+- educational technology tools and platforms  
+
+You may receive questions in different languages, including Pashto. If the question is educational in nature, provide a helpful and clear response in the same language.
+
+If the question is not related to educational, academic, or learning topics, politely decline to answer.
+`
+                                        }
+                                    ]
+                                },
+                                {
+                                    role: "user",
+                                    parts: [{ text: prompt }]
+                                }
+                            ]
+                        }),
+                    }
+                );
+
+                const data = await result.json();
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+                const html = marked.parse(text);
+
+                loadingReply.innerHTML = `
+            <div class="response-text">${html}</div>
+            <button class="copy-btn" title="Copy to clipboard">📋</button>
+        `;
+
+                const copyBtn = loadingReply.querySelector(".copy-btn");
+                copyBtn.addEventListener("click", () => {
+                    const plainText = loadingReply.querySelector(".response-text").innerText;
+                    navigator.clipboard.writeText(plainText);
+                });
+
+            } catch (error) {
+                loadingReply.innerHTML = `<strong>Poha:</strong> Sorry, something went wrong. Please try again later.`;
+                console.error("Gemini API Error:", error);
+            }
+
+            responseDisplay.scrollTop = responseDisplay.scrollHeight;
+            updateClearButtonState();
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
